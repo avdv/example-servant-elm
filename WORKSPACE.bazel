@@ -17,7 +17,7 @@ rules_haskell_dependencies()
 
 load("@rules_haskell//haskell:toolchain.bzl", "rules_haskell_toolchains")
 
-rules_haskell_toolchains(version = "9.4.5")
+rules_haskell_toolchains(version = "9.6.3")
 
 load("@rules_haskell//haskell:cabal.bzl", "stack_snapshot")
 
@@ -63,48 +63,8 @@ stack_snapshot(
         "wai-app-static",
         "warp",
     ],
-    setup_deps = {
-        # TODO: Remove when tests are run with a ghc version containing Cabal >= 3.10
-        # See https://github.com/tweag/rules_haskell/issues/1871
-        "base-orphans": ["@Cabal//:Cabal"],
-        "bifunctors": ["@Cabal//:Cabal"],
-        "call-stack": ["@Cabal//:Cabal"],
-        "ghcid": ["@Cabal//:Cabal"],
-        "hspec": ["@Cabal//:Cabal"],
-        "hspec-core": ["@Cabal//:Cabal"],
-        "hspec-discover": ["@Cabal//:Cabal"],
-        "hspec-expectations": ["@Cabal//:Cabal"],
-        "HUnit": ["@Cabal//:Cabal"],
-        "invariant": ["@Cabal//:Cabal"],
-        "quickcheck-io": ["@Cabal//:Cabal"],
-        "semigroups": ["@Cabal//:Cabal"],
-        "tagged": ["@Cabal//:Cabal"],
-        "transformers-compat": ["@Cabal//:Cabal"],
-        "unliftio": ["@Cabal//:Cabal"],
-        "unliftio-core": ["@Cabal//:Cabal"],
-        "warp": ["@Cabal//:Cabal"],
-    },
-    snapshot = "lts-21.2",
+    snapshot = "nightly-2023-10-26",
     stack_snapshot_json = "//:stackage_snapshot.json",
-)
-
-# TODO: Remove when tests are run with a ghc version containing Cabal >= 3.10
-# See https://github.com/tweag/rules_haskell/issues/1871
-http_archive(
-    name = "Cabal",
-    build_file_content = """
-load("@rules_haskell//haskell:cabal.bzl", "haskell_cabal_library")
-haskell_cabal_library(
-    name = "Cabal",
-    srcs = glob(["Cabal/**"]),
-    verbose = False,
-    version = "3.6.3.0",
-    visibility = ["//visibility:public"],
-)
-""",
-    sha256 = "f69b46cb897edab3aa8d5a4bd7b8690b76cd6f0b320521afd01ddd20601d1356",
-    strip_prefix = "cabal-gg-8220-with-3630",
-    urls = ["https://github.com/tweag/cabal/archive/refs/heads/gg/8220-with-3630.zip"],
 )
 
 http_archive(
