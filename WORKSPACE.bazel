@@ -78,28 +78,32 @@ http_archive(
 # -- Elm dependencies ------------------------------------------------
 
 http_archive(
-    name = "build_bazel_rules_nodejs",
-    sha256 = "5dd1e5dea1322174c57d3ca7b899da381d516220793d0adef3ba03b9d23baa8e",
-    urls = ["https://github.com/bazelbuild/rules_nodejs/releases/download/5.8.3/rules_nodejs-5.8.3.tar.gz"],
+    name = "aspect_rules_js",
+    sha256 = "2a1e5d4400e2b49f6d36785aa894412670a0babfe7054e733b6a8f23c1b41e26",
+    strip_prefix = "rules_js-1.23.1",
+    url = "https://github.com/aspect-build/rules_js/releases/download/v1.23.1/rules_js-v1.23.1.tar.gz",
 )
 
-load("@build_bazel_rules_nodejs//:repositories.bzl", "build_bazel_rules_nodejs_dependencies")
+load("@aspect_rules_js//js:repositories.bzl", "rules_js_dependencies")
 
-build_bazel_rules_nodejs_dependencies()
+rules_js_dependencies()
 
 load("@rules_nodejs//nodejs:repositories.bzl", "nodejs_register_toolchains")
 
 nodejs_register_toolchains(name = "nodejs")
 
-load("@build_bazel_rules_nodejs//:index.bzl", "npm_install")
+load("@aspect_rules_js//npm:npm_import.bzl", "npm_translate_lock")
 
-npm_install(
+npm_translate_lock(
     name = "npm",
-    args = ["--ignore-scripts"],
-    exports_directories_only = True,
-    package_json = "//:package.json",
-    package_lock_json = "//:package-lock.json",
+    data = ["//:package.json"],
+    npm_package_lock = "//:package-lock.json",
+    npmrc = "//:.npmrc",
 )
+
+load("@npm//:repositories.bzl", "npm_repositories")
+
+npm_repositories()
 
 http_archive(
     name = "com_github_edschouten_rules_elm",

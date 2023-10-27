@@ -8,6 +8,7 @@ load(
     "@rules_haskell//haskell:defs.bzl",
     "haskell_binary",
 )
+load("@npm//:uglify-js/package_json.bzl", uglifyjs = "bin")
 
 haskell_binary(
     name = "generate-elm",
@@ -49,9 +50,12 @@ elm_library(
     ],
 )
 
+uglifyjs.uglifyjs_binary("uglify")
+
 elm_binary(
     name = "main",
     main = "src/Main.elm",
+    uglifyjs = "uglify",
     visibility = ["//assets:__pkg__"],
     deps = [
         ":app",
