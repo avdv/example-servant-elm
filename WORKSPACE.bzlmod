@@ -4,17 +4,6 @@ load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
 # -- Haskell dependencies --------------------------------------------
 
-http_archive(
-    name = "rules_haskell",
-    sha256 = "298f6f0db23391274b4eca215daa01797d05699469048ef94540d5829b466377",
-    strip_prefix = "rules_haskell-0.17",
-    url = "https://github.com/tweag/rules_haskell/archive/refs/tags/v0.17.tar.gz",
-)
-
-load("@rules_haskell//haskell:repositories.bzl", "rules_haskell_dependencies")
-
-rules_haskell_dependencies()
-
 load("@rules_haskell//haskell:toolchain.bzl", "rules_haskell_toolchains")
 
 rules_haskell_toolchains(version = "9.6.3")
@@ -76,34 +65,6 @@ http_archive(
 )
 
 # -- Elm dependencies ------------------------------------------------
-
-http_archive(
-    name = "aspect_rules_js",
-    sha256 = "2a1e5d4400e2b49f6d36785aa894412670a0babfe7054e733b6a8f23c1b41e26",
-    strip_prefix = "rules_js-1.23.1",
-    url = "https://github.com/aspect-build/rules_js/releases/download/v1.23.1/rules_js-v1.23.1.tar.gz",
-)
-
-load("@aspect_rules_js//js:repositories.bzl", "rules_js_dependencies")
-
-rules_js_dependencies()
-
-load("@rules_nodejs//nodejs:repositories.bzl", "nodejs_register_toolchains")
-
-nodejs_register_toolchains(name = "nodejs")
-
-load("@aspect_rules_js//npm:npm_import.bzl", "npm_translate_lock")
-
-npm_translate_lock(
-    name = "npm",
-    data = ["//:package.json"],
-    npm_package_lock = "//:package-lock.json",
-    npmrc = "//:.npmrc",
-)
-
-load("@npm//:repositories.bzl", "npm_repositories")
-
-npm_repositories()
 
 http_archive(
     name = "com_github_edschouten_rules_elm",

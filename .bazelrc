@@ -3,5 +3,7 @@ test --test_output=errors
 
 common --enable_bzlmod
 
+common --registry=file:%workspace%/registry --registry=https://bcr.bazel.build
+
 # Import local Bazel config if present
 try-import %workspace%/user.bazelrc
