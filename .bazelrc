@@ -1,5 +1,7 @@
 # Show test output on failure
 test --test_output=errors
 
+common --enable_bzlmod
+
 # Import local Bazel config if present
 try-import %workspace%/user.bazelrc

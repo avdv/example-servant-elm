@@ -1,0 +1,131 @@
+workspace(name = "example-servant-elm")
+
+load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
+
+# -- Haskell dependencies --------------------------------------------
+
+http_archive(
+    name = "rules_proto",
+    sha256 = "8e7d59a5b12b233be5652e3d29f42fba01c7cbab09f6b3a8d0a57ed6d1e9a0da",
+    strip_prefix = "rules_proto-7e4afce6fe62dbff0a4a03450143146f9f2d7488",
+    urls = [
+        "https://mirror.bazel.build/github.com/bazelbuild/rules_proto/archive/7e4afce6fe62dbff0a4a03450143146f9f2d7488.tar.gz",
+        "https://github.com/bazelbuild/rules_proto/archive/7e4afce6fe62dbff0a4a03450143146f9f2d7488.tar.gz"
+    ],
+)
+
+http_archive(
+    name = "rules_haskell",
+    sha256 = "298f6f0db23391274b4eca215daa01797d05699469048ef94540d5829b466377",
+    strip_prefix = "rules_haskell-0.17",
+    url = "https://github.com/tweag/rules_haskell/archive/refs/tags/v0.17.tar.gz",
+)
+
+load("@rules_haskell//haskell:repositories.bzl", "rules_haskell_dependencies")
+
+rules_haskell_dependencies()
+
+load("@rules_haskell//haskell:toolchain.bzl", "rules_haskell_toolchains")
+
+rules_haskell_toolchains(version = "9.6.3")
+
+load("@rules_haskell//haskell:cabal.bzl", "stack_snapshot")
+
+stack_snapshot(
+    name = "stackage",
+    components = {
+        "attoparsec": [
+            "lib",
+            "lib:attoparsec-internal",
+        ],
+        "ghcid": [
+            "exe",
+            "lib",
+        ],
+        "hspec-discover": [
+            "exe",
+            "lib",
+        ],
+    },
+    components_dependencies = {
+        "attoparsec": """{"lib:attoparsec": ["lib:attoparsec-internal"]}""",
+    },
+    extra_deps = {
+        "zlib": ["@zlib.c"],
+    },
+    packages = [
+        "aeson",
+        "base",
+        "containers",
+        "elm-bridge",
+        "ghcid",
+        "hspec",
+        "hspec-discover",
+        "http-client",
+        "http-types",
+        "servant",
+        "servant-client",
+        "servant-elm-0.7.2",
+        "servant-server",
+        "text",
+        "transformers",
+        "wai",
+        "wai-app-static",
+        "warp",
+    ],
+    snapshot = "nightly-2023-10-26",
+    stack_snapshot_json = "//:stackage_snapshot.json",
+)
+
+http_archive(
+    name = "zlib.c",
+    build_file = "//3rdparty:zlib.BUILD",
+    sha256 = "b3a24de97a8fdbc835b9833169501030b8977031bcb54b3b3ac13740f846ab30",
+    strip_prefix = "zlib-1.2.13",
+    urls = ["https://zlib.net/fossils/zlib-1.2.13.tar.gz"],
+)
+
+# -- Elm dependencies ------------------------------------------------
+
+http_archive(
+    name = "aspect_rules_js",
+    sha256 = "2a1e5d4400e2b49f6d36785aa894412670a0babfe7054e733b6a8f23c1b41e26",
+    strip_prefix = "rules_js-1.23.1",
+    url = "https://github.com/aspect-build/rules_js/releases/download/v1.23.1/rules_js-v1.23.1.tar.gz",
+)
+
+load("@aspect_rules_js//js:repositories.bzl", "rules_js_dependencies")
+
+rules_js_dependencies()
+
+load("@rules_nodejs//nodejs:repositories.bzl", "nodejs_register_toolchains")
+
+nodejs_register_toolchains(name = "nodejs")
+
+load("@aspect_rules_js//npm:npm_import.bzl", "npm_translate_lock")
+
+npm_translate_lock(
+    name = "npm",
+    data = ["//:package.json"],
+    npm_package_lock = "//:package-lock.json",
+    npmrc = "//:.npmrc",
+)
+
+load("@npm//:repositories.bzl", "npm_repositories")
+
+npm_repositories()
+
+http_archive(
+    name = "com_github_edschouten_rules_elm",
+    sha256 = "8a917d768c0aad6f73357e0e4ac00050a8ca1d8949aa0c367361d840892bf681",
+    strip_prefix = "rules_elm-944cd84f4e0dd101e9d632ca6fb2ceee15e8509a",
+    urls = ["https://github.com/EdSchouten/rules_elm/archive/944cd84f4e0dd101e9d632ca6fb2ceee15e8509a.tar.gz"],
+)
+
+load("@com_github_edschouten_rules_elm//elm:deps.bzl", "elm_register_toolchains")
+
+elm_register_toolchains()
+
+load("//:elm_repositories.bzl", "elm_repositories")
+
+elm_repositories()
