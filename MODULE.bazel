@@ -2,3 +2,4 @@
 module(name = "example-elm", version = "0.1")
 
 
+bazel_dep(name = "rules_proto", version = "4.0.0")
