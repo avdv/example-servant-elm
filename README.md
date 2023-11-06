@@ -1,3 +1,7 @@
+# Bazel Hour 2023 - Bazel + Haskell migration to bzlmod
+
+This branch comprises the final state from the live coding session, from 2nd Nov 2023.
+
 # Bazel Hour 2023 - Bazel + Haskell
 
 This example was previously demonstrated
