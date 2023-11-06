@@ -2,68 +2,6 @@ workspace(name = "example-servant-elm")
 
 load("@bazel_tools//tools/build_defs/repo:http.bzl", "http_archive")
 
-# -- Haskell dependencies --------------------------------------------
-
-load("@rules_haskell//haskell:toolchain.bzl", "rules_haskell_toolchains")
-
-rules_haskell_toolchains(version = "9.6.3")
-
-load("@rules_haskell//haskell:cabal.bzl", "stack_snapshot")
-
-stack_snapshot(
-    name = "stackage",
-    components = {
-        "attoparsec": [
-            "lib",
-            "lib:attoparsec-internal",
-        ],
-        "ghcid": [
-            "exe",
-            "lib",
-        ],
-        "hspec-discover": [
-            "exe",
-            "lib",
-        ],
-    },
-    components_dependencies = {
-        "attoparsec": """{"lib:attoparsec": ["lib:attoparsec-internal"]}""",
-    },
-    extra_deps = {
-        "zlib": ["@zlib.c"],
-    },
-    packages = [
-        "aeson",
-        "base",
-        "containers",
-        "elm-bridge",
-        "ghcid",
-        "hspec",
-        "hspec-discover",
-        "http-client",
-        "http-types",
-        "servant",
-        "servant-client",
-        "servant-elm-0.7.2",
-        "servant-server",
-        "text",
-        "transformers",
-        "wai",
-        "wai-app-static",
-        "warp",
-    ],
-    snapshot = "nightly-2023-10-26",
-    stack_snapshot_json = "//:stackage_snapshot.json",
-)
-
-http_archive(
-    name = "zlib.c",
-    build_file = "//3rdparty:zlib.BUILD",
-    sha256 = "b3a24de97a8fdbc835b9833169501030b8977031bcb54b3b3ac13740f846ab30",
-    strip_prefix = "zlib-1.2.13",
-    urls = ["https://zlib.net/fossils/zlib-1.2.13.tar.gz"],
-)
-
 # -- Elm dependencies ------------------------------------------------
 
 http_archive(

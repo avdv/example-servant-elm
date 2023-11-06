@@ -28,3 +28,79 @@ npm.npm_translate_lock(
 )
 
 use_repo(npm, "npm")
+
+# -- Haskell dependencies --------------------------------------------
+
+haskell_toolchains = use_extension(
+    "@rules_haskell//extensions:haskell_toolchains.bzl",
+    "haskell_toolchains",
+)
+
+haskell_toolchains.bindists(version = "9.6.3")
+
+non_module_deps = use_extension(
+    "//:non-module-deps.bzl",
+    "deps",
+)
+
+stack = use_extension(
+    "@rules_haskell//extensions:stack_snapshot.bzl",
+    "stack_snapshot",
+)
+
+stack.package(
+    name = "hspec-discover",
+    components = [
+        "exe",
+        "lib",
+    ],
+)
+
+stack.package(   
+    name = "attoparsec",
+    components = [
+        "lib",
+        "lib:attoparsec-internal",
+    ],
+    components_dependencies = { 
+        "lib:attoparsec": ["lib:attoparsec-internal"],
+    },
+)
+
+stack.package(
+    name = "ghcid",
+    components = [
+        "exe",
+        "lib",
+    ],
+)
+
+[stack.package(name = pkg) for pkg in [
+    "aeson",
+    "base",
+    "containers",
+    "elm-bridge",
+    "hspec",
+    "http-client",
+    "http-types",
+    "servant",
+    "servant-client",
+    "servant-elm",
+    "servant-server",
+    "text",
+    "transformers",
+    "wai",
+    "wai-app-static",
+    "warp",
+]]
+
+use_repo(
+    stack,
+    "stackage",
+    "stackage-exe",
+    "stackage-unpinned",
+)
+
+stack.snapshot(name = "nightly-2023-10-26")
+
+stack.stack_snapshot_json(label = "//:stackage_snapshot.json")
